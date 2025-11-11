@@ -1,10 +1,9 @@
-// holidayApp.tsx
-
 "use client";
 
 import React, { useState } from 'react';
-// As importações de Query/React-Query devem estar no componente que as USA.
 import { useQuery } from '@tanstack/react-query';
+import { CountrySelect } from './CountrySelect';
+import { HolidayCard } from './HolidayCard';
 
 type Country = {
   countryCode: string;
@@ -18,32 +17,26 @@ type Holiday = {
   countryCode: string;
 };
 
-// A API e as funções de busca continuam aqui, pois pertencem a este componente.
 const NAGER_API_URL = 'https://date.nager.at/api/v3';
 
-// Encontre sua função fetchCountries e atualize a primeira linha dela
 const fetchCountries = async (): Promise<Country[]> => {
-    console.log("Buscando lista de países da API Nager...");
     const response = await fetch(`${NAGER_API_URL}/AvailableCountries`);
     if (!response.ok) {
-        throw new Error('Failed to fetch countries from Nager API.');
+        throw new Error('Falha ao buscar países da API Nager.');
     }
-    // Agora o TypeScript sabe que o resultado de response.json() 
-    // será um array de objetos Country.
     return response.json(); 
 };
 
-const fetchHolidays = async (countryCode: string) => {
+const fetchHolidays = async (countryCode: string): Promise<Holiday[]> => {
     if (!countryCode) return [];
     const currentYear = new Date().getFullYear();
     const response = await fetch(`${NAGER_API_URL}/PublicHolidays/${currentYear}/${countryCode}`);
-    if (!response.ok) throw new Error(`Error fetching holidays for ${countryCode}.`);
+    if (!response.ok) throw new Error(`Erro ao buscar feriados para ${countryCode}.`);
     return response.json();
 };
 
-// --- MUDANÇA PRINCIPAL: Adicionamos "export" aqui! ---
 export function HolidayApp() {
-    const [selectedCountry, setSelectedCountry] = useState('NL'); 
+    const [selectedCountry, setSelectedCountry] = useState('BR'); 
 
     const { data: countries, isLoading: isLoadingCountries, isError: isErrorCountries } = useQuery({
         queryKey: ['countries'],
@@ -56,62 +49,68 @@ export function HolidayApp() {
         enabled: !!selectedCountry,
     });
 
-    const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCountry(event.target.value);
-    };
-
     const selectedCountryName = countries?.find(c => c.countryCode === selectedCountry)?.name || selectedCountry;
 
-    // O JSX do seu componente continua exatamente o mesmo...
     return (
-        <div className="paper container">
-            <h1 className="text-center">National Holidays</h1>
-            
-            <div className="form-group">
-                <label htmlFor="country-select">Select a Country:</label>
-                {isLoadingCountries ? (
-                    <p>Loading countries...</p>
-                ) : isErrorCountries ? (
-                    <p className="alert alert-danger">Failed to load countries.</p>
-                ) : (
-                    <select 
-                        id="country-select"
-                        value={selectedCountry} 
-                        onChange={handleCountryChange}
-                        className="form-control"
-                    >
-                        {countries?.map(country => (
-                            <option key={country.countryCode} value={country.countryCode}>
-                                {country.name}
-                            </option>
-                        ))}
-                    </select>
-                )}
+        <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-4">
+                <h1 className="text-5xl font-bold text-[var(--text-primary)] tracking-tight">
+                    Feriados Nacionais
+                </h1>
+                <p className="text-lg text-[var(--text-secondary)]">
+                    Explore os feriados de diferentes países ao redor do mundo
+                </p>
             </div>
 
-            <hr />
+            {/* Country Select */}
+            <CountrySelect
+                countries={countries || []}
+                selectedCountry={selectedCountry}
+                onCountryChange={setSelectedCountry}
+                isLoading={isLoadingCountries}
+                isError={isErrorCountries}
+            />
 
-            <div>
-                <h2>Holidays for {selectedCountryName}</h2>
-                {isLoadingHolidays && <p>Loading holidays...</p>}
-                {isErrorHolidays && <p className="alert alert-danger">{(holidayError as Error).message}</p>}
+            {/* Holidays List */}
+            <div className="glass-card rounded-2xl p-8">
+                <h2 className="text-2xl font-semibold text-[var(--text-primary)] mb-6">
+                    Feriados de {selectedCountryName}
+                </h2>
+                
+                {isLoadingHolidays && (
+                    <div className="space-y-4">
+                        {[...Array(3)].map((_, i) => (
+                            <div key={i} className="glass-card rounded-2xl p-6 animate-pulse">
+                                <div className="h-6 bg-[var(--glass-border)] rounded w-1/3 mb-3"></div>
+                                <div className="h-4 bg-[var(--glass-border)] rounded w-1/4"></div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {isErrorHolidays && (
+                    <div className="glass-card rounded-2xl p-6 border-red-500/30">
+                        <p className="text-red-500 m-0">
+                            {(holidayError as Error)?.message || 'Erro ao carregar feriados. Tente novamente mais tarde.'}
+                        </p>
+                    </div>
+                )}
                 
                 {holidays && holidays.length > 0 && (
-                    <ul className="list-unstyled">
+                    <ul className="space-y-4 list-none p-0 m-0">
                         {holidays.map(holiday => (
-                            <li key={holiday.date + holiday.name} className="card" style={{marginBottom: '1rem'}}>
-                                <div className="card-body">
-                                    <h4 className="card-title">{holiday.localName}</h4>
-                                    <p className="card-text">{new Date(holiday.date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                                    <p className="card-text"><small>National Name: {holiday.name}</small></p>
-                                </div>
-                            </li>
+                            <HolidayCard key={holiday.date + holiday.name} holiday={holiday} />
                         ))}
                     </ul>
                 )}
 
                 {holidays && holidays.length === 0 && !isLoadingHolidays && (
-                    <p className="alert alert-secondary">No holidays found for this country.</p>
+                    <div className="text-center py-12">
+                        <p className="text-[var(--text-secondary)] text-lg">
+                            Nenhum feriado encontrado para este país.
+                        </p>
+                    </div>
                 )}
             </div>
         </div>
