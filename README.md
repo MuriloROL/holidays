@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎉 Feriados Nacionais
 
-## Getting Started
+Uma aplicação web moderna e elegante para explorar feriados nacionais de diferentes países ao redor do mundo. Desenvolvida com design minimalista inspirado no **liquid glass** da Apple, utilizando efeitos de glassmorphism.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-15.3.5-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-blue?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=flat-square&logo=tailwind-css)
 
+## ✨ Características
+
+- 🎨 **Design Glassmorphism**: Interface minimalista com efeitos de vidro fosco (liquid glass)
+- 🌓 **Tema Claro/Escuro**: Alternância manual entre temas com persistência no localStorage
+- 🌍 **Múltiplos Países**: Explore feriados de diversos países ao redor do mundo
+- ⚡ **Performance**: Utiliza React Query para cache e gerenciamento de estado
+- 📱 **Responsivo**: Design totalmente adaptável para todos os dispositivos
+- 🎭 **Animações Suaves**: Transições elegantes em todas as interações
+- ♿ **Acessível**: Implementado com boas práticas de acessibilidade
+
+## 🚀 Tecnologias
+
+- **Next.js 15.3.5** - Framework React com App Router
+- **React 19** - Biblioteca UI
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS 4** - Estilização utilitária
+- **TanStack Query** - Gerenciamento de estado e cache
+- **Nager Date API** - API pública de feriados
+
+## 📦 Instalação
+
+1. Clone o repositório:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <url-do-repositorio>
+cd holidays
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instale as dependências:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏃 Executando o Projeto
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Desenvolvimento
+```bash
+npm run dev
+```
 
-## Learn More
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-To learn more about Next.js, take a look at the following resources:
+### Build para Produção
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Linting
+```bash
+npm run lint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📁 Estrutura do Projeto
 
-## Deploy on Vercel
+```
+holidays/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Layout principal com ThemeProvider
+│   │   ├── page.tsx             # Página inicial
+│   │   └── globals.css          # Estilos globais com glassmorphism
+│   ├── components/
+│   │   ├── holidayApp.tsx       # Componente principal da aplicação
+│   │   ├── HolidayCard.tsx      # Card de feriado com glassmorphism
+│   │   ├── CountrySelect.tsx    # Select customizado de países
+│   │   ├── ThemeToggle.tsx      # Botão de alternância de tema
+│   │   └── ThemeProviderWrapper.tsx
+│   └── contexts/
+│       └── ThemeContext.tsx      # Contexto de tema
+├── public/                      # Arquivos estáticos
+└── package.json
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Design
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O projeto utiliza um design minimalista com efeitos de **glassmorphism**:
+
+- **Backdrop Filter**: Efeitos de blur e saturação para criar o efeito de vidro
+- **Transparências**: Camadas semi-transparentes para profundidade visual
+- **Gradientes Sutis**: Backgrounds com gradientes suaves
+- **Sombras Leves**: Sombras difusas para elevação dos elementos
+- **Bordas Finas**: Bordas sutis para definir os elementos
+
+### Tema Claro
+- Background: Gradiente azul claro
+- Cards: Branco semi-transparente com blur
+- Texto: Tons escuros para contraste
+
+### Tema Escuro
+- Background: Gradiente azul escuro
+- Cards: Preto semi-transparente com blur
+- Texto: Tons claros para contraste
+
+## 🔌 API
+
+O projeto utiliza a [Nager Date API](https://date.nager.at/) para buscar informações sobre feriados:
+
+- **Endpoint de Países**: `https://date.nager.at/api/v3/AvailableCountries`
+- **Endpoint de Feriados**: `https://date.nager.at/api/v3/PublicHolidays/{year}/{countryCode}`
+
+## 🛠️ Scripts Disponíveis
+
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm run build` - Cria build de produção
+- `npm run start` - Inicia o servidor de produção
+- `npm run lint` - Executa o linter
+
+## 📝 Licença
+
+Este projeto é privado.
+
+## 👨‍💻 Autor
+
+Murilo Rodrigues Lima
+---
+
+**Nota**: Este projeto foi criado para fins educacionais e demonstração de design moderno com glassmorphism.
